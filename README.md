@@ -6,7 +6,7 @@ Project gợi ý từ khóa tìm kiếm sử dụng cấu trúc dữ liệu Trie
 
 # Kiến trúc hệ thống
 
-<!-- Chèn hình architecture.png tại đây -->
+![System Architecture](Docs/architecture.png)
 
 ---
 
