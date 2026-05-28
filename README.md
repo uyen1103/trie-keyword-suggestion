@@ -12,11 +12,11 @@ Xây dựng cấu trúc cây Trie để lưu trữ từ điển. Khi người d�
 
 # Chức năng
 
-Prefix Search — Nhập tiền tố, gợi ý các từ phù hợp theo thời gian thực
-Longest Common Prefix — Tìm tiền tố chung dài nhất (Chia để trị)
-Ranking Suggestions — Xếp hạng gợi ý theo tần suất + độ mới
-Search History — Lưu lịch sử tìm kiếm bằng SQLite
-Top-K Suggestions — Trả về K gợi ý tốt nhất
+- Prefix Search — Nhập tiền tố, gợi ý các từ phù hợp theo thời gian thực
+- Longest Common Prefix — Tìm tiền tố chung dài nhất (Chia để trị)
+- Ranking Suggestions — Xếp hạng gợi ý theo tần suất + độ mới
+- Search History — Lưu lịch sử tìm kiếm bằng SQLite
+- Top-K Suggestions — Trả về K gợi ý tốt nhất
 
 ---
 
