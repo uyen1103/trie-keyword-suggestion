@@ -215,9 +215,6 @@ class MainWindow(ctk.CTk):
     # Gọi khi người dùng click chọn 1 gợi ý.
     # Điền từ vào ô nhập, gọi select_callback(word).
 
-    def _toggle_theme(self) -> None
-    # Chuyển đổi giữa Light mode và Dark mode.
-
     def _clear_input(self) -> None
     # Xóa ô nhập và reset danh sách gợi ý.
 
