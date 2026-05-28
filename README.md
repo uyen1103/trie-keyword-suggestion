@@ -1,6 +1,6 @@
 # Trie Keyword Suggestion
 
-Project gợi ý từ khóa tìm kiếm sử dụng cấu trúc dữ liệu Trie (Prefix Tree).
+Xây dựng cấu trúc cây Trie để lưu trữ từ điển. Khi người dùng nhập một tiền tố, hệ thống nhanh chóng liệt kê các từ gợi ý hoặc tìm tiền tố chung dài nhất của một tập hợp các từ.
 
 ---
 
@@ -12,10 +12,11 @@ Project gợi ý từ khóa tìm kiếm sử dụng cấu trúc dữ liệu Trie
 
 # Chức năng
 
-- Prefix Search
-- Ranking Suggestions
-- Search History
-- Top-k Suggestions
+Prefix Search — Nhập tiền tố, gợi ý các từ phù hợp theo thời gian thực
+Longest Common Prefix — Tìm tiền tố chung dài nhất (Chia để trị)
+Ranking Suggestions — Xếp hạng gợi ý theo tần suất + độ mới
+Search History — Lưu lịch sử tìm kiếm bằng SQLite
+Top-K Suggestions — Trả về K gợi ý tốt nhất
 
 ---
 
@@ -64,6 +65,13 @@ TRIE-KEYWORD-SUGGESTION/
 # Chạy project
 
 ```bash
+# 1. Clone project
+git clone https://github.com/uyen1103/trie-keyword-suggestion.git
+cd trie-keyword-suggestion
+
+# 2. Cài thư viện
 pip install -r requirements.txt
+
+# 3. Chạy ứng dụng
 python Code/main.py
 ```
