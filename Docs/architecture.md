@@ -241,7 +241,7 @@ class AppController:
     # Input : prefix — tiền tố người dùng đang nhập
     # Output: list[str] — top_k từ đã được xếp hạng
     # Luồng bên trong:
-    #   1. Trie.starts_with(prefix, max=50)     → candidates
+    #   1. Trie.prefix_search(prefix, max=50)     → candidates
     #   2. DB.get_all_data(candidates)           → db_data
     #   3. Ranker.get_top(candidates, db_data)   → top_k kết quả
 
