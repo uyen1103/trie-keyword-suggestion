@@ -52,7 +52,7 @@ class Trie:
     # Ví dụ: search("tìm") = False khi chỉ có "tìm kiếm" trong Trie.
     # Độ phức tạp: O(m)
 
-    def starts_with(self, prefix: str, max_results: int = 10) -> list[str]
+    def prefix_search(self, prefix: str, max_results: int = 10) -> list[str]
     # Liệt kê các từ có cùng tiền tố — hàm quan trọng nhất.
     # Input : prefix      — tiền tố người dùng nhập
     #         max_results — số kết quả tối đa trả về
