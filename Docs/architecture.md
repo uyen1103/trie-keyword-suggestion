@@ -158,7 +158,7 @@ class SuggestionRanker:
 
     def rank(self, words: list[str], db_data: list[dict]) -> list[str]
     # Xếp hạng toàn bộ danh sách từ theo weighted score.
-    # Input : words   — danh sách gợi ý lấy từ Trie.starts_with()
+    # Input : words   — danh sách gợi ý lấy từ Trie.prefix_search()
     #         db_data — list[dict] từ DatabaseManager.get_all_data()
     #                   mỗi dict: { "keyword": str, "frequency": int, "last_searched": str }
     # Output: list[str] — danh sách đã sắp xếp theo score giảm dần
@@ -241,7 +241,7 @@ class AppController:
     # Input : prefix — tiền tố người dùng đang nhập
     # Output: list[str] — top_k từ đã được xếp hạng
     # Luồng bên trong:
-    #   1. Trie.prefix_search(prefix, max=50)     → candidates
+    #   1. Trie.prefix_search(prefix, max_results=50)   → candidates
     #   2. DB.get_all_data(candidates)           → db_data
     #   3. Ranker.get_top(candidates, db_data)   → top_k kết quả
 
