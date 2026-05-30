@@ -3,6 +3,7 @@
 
 class TrieNode:
 
-    def __init__(self):
-        self.children = {}
-        self.is_end_of_word = False 
+    def __init__(self) -> None:
+        self.children: dict = {}
+        self.is_end: bool = False
+        self.word: str | None = None
