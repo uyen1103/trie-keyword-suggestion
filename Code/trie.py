@@ -21,7 +21,8 @@ class Trie:
 
             node = node.children[char]
 
-        node.is_end_of_word = True
+        node.is_end = True
+        node.word = word
 
     # SEARCH
     def search(self, word):
@@ -35,10 +36,10 @@ class Trie:
 
             node = node.children[char]
 
-        return node.is_end_of_word
+        return node.is_end
 
     # PREFIX SEARCH
-    def prefix_search(self, prefix):
+    def prefix_search(self, prefix, max_results=10):
 
         node = self.root
 
@@ -51,21 +52,25 @@ class Trie:
 
         result = []
 
-        self._dfs(node, prefix, result)
+        self._dfs(node, prefix, result, max_results)
 
         return result
 
     # DFS đệ quy trên Trie
-    def _dfs(self, node, current_word, result):
+    def _dfs(self, node, current_word, result, max_results):
 
-        if node.is_end_of_word:
+        if len(result) >= max_results:
+            return
+
+        if node.is_end:
             result.append(current_word)
 
         for char, child in node.children.items():
             self._dfs(
                 child,
                 current_word + char,
-                result
+                result,
+                max_results
             )
 
 # CHIA ĐỂ TRỊ - LONGEST COMMON PREFIX
