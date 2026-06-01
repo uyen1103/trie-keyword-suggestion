@@ -1,17 +1,29 @@
 # trie.py
 # Trie data structure for keyword storage and prefix lookup
 
-from trie_node import TrieNode
+from Code.trie_node import TrieNode
 
 
 class Trie:
 
     def __init__(self):
         self.root = TrieNode()
+        self._size=0;
+    
+    def size(self)->int:
+        return self._size
+    
+    def load_from_list(self,words: list[str])->int:
+        count =0
+        for word in words:
+            self.insert(word)
+            count+=1
+        
+        return count
 
     # INSERT
     def insert(self, word):
-
+        word=word.casefold()
         node = self.root
 
         for char in word:
@@ -21,12 +33,15 @@ class Trie:
 
             node = node.children[char]
 
+        if not node.is_end:
+            self._size+=1
+
         node.is_end = True
         node.word = word
 
     # SEARCH
     def search(self, word):
-
+        word=word.casefold()
         node = self.root
 
         for char in word:
@@ -40,7 +55,7 @@ class Trie:
 
     # PREFIX SEARCH
     def prefix_search(self, prefix, max_results=10):
-
+        prefix=prefix.casefold()
         node = self.root
 
         for char in prefix:
@@ -72,45 +87,55 @@ class Trie:
                 result,
                 max_results
             )
+    # Dung ham public nay khong dung 2 ham duoi
+    def longest_common_prefix(self, words):
 
-# CHIA ĐỂ TRỊ - LONGEST COMMON PREFIX
+        if not words:
+            return ""
 
-def common_prefix(str1, str2):
+        words = [word.casefold() for word in words]
 
-    result = ""
+        return self._longest_common_prefix(
+            words,
+            0,
+            len(words) - 1
+        )
 
-    length = min(len(str1), len(str2))
+    def _common_prefix(self,str1, str2):
 
-    for i in range(length):
+        result = ""
 
-        if str1[i] == str2[i]:
-            result += str1[i]
-        else:
-            break
+        length = min(len(str1), len(str2))
 
-    return result
+        for i in range(length):
 
+            if str1[i] == str2[i]:
+                result += str1[i]
+            else:
+                break
 
-def longest_common_prefix(words, left, right):
+        return result
 
-    if left == right:
-        return words[left]
+    def _longest_common_prefix(self,words, left, right):
 
-    mid = (left + right) // 2
+        if left == right:
+            return words[left]
 
-    left_lcp = longest_common_prefix(
-        words,
-        left,
-        mid
-    )
+        mid = (left + right) // 2
 
-    right_lcp = longest_common_prefix(
-        words,
-        mid + 1,
-        right
-    )
+        left_lcp = self._longest_common_prefix(
+            words,
+            left,
+            mid
+        )
 
-    return common_prefix(
-        left_lcp,
-        right_lcp
-    )
+        right_lcp = self._longest_common_prefix(
+            words,
+            mid + 1,
+            right
+        )
+
+        return self._common_prefix(
+            left_lcp,
+            right_lcp
+        )
