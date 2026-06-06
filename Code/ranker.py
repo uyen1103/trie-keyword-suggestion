@@ -1,2 +1,85 @@
 # ranker.py
 # Ranking logic for suggested keywords
+from datetime import datetime, timedelta
+import string
+
+
+class SuggestionRanker:
+    def __init__(self, w_freq: float = 0.7, w_rec: float = 0.3):
+        self.FREQ_WEIGHT = w_freq
+        self.RECENCY_WEIGHT = w_rec
+
+    def rank(self, words: list[str], db_data):
+        """
+        words: list of prefixes user typed (list[str])
+        db_data: list of dicts with keys: 'keyword', 'frequency', 'last_searched'
+        Returns: list[str] of keywords ordered by descending score
+        """
+
+        if not db_data:
+            return []
+
+        # lọc theo prefix list
+        if not isinstance(words, (list, tuple)):
+            prefixes = [str(words)]
+        else:
+            prefixes = [str(p) for p in words]
+
+        prefixes = [p.lower() for p in prefixes]
+
+        filtered = [
+            item for item in db_data
+            if any(
+                item["keyword"].lower().startswith(prefix)
+                for prefix in prefixes
+            )
+        ]
+
+        if not filtered:
+            return []
+
+        max_freq = max(item["frequency"] for item in filtered)
+
+        ranked = []
+
+        for item in filtered:
+            freq = item["frequency"]
+
+            days_old = (
+                datetime.now() - item["last_searched"]
+            ).days
+
+            frequency_score = (
+                freq / max_freq
+                if max_freq > 0
+                else 0
+            )
+
+            recency_score = 1 / (1 + days_old)
+
+            score = (
+                self.FREQ_WEIGHT * frequency_score
+                + self.RECENCY_WEIGHT * recency_score
+            )
+
+            ranked.append({
+                "keyword": item["keyword"],
+                "frequency": freq,
+                "days_old": days_old,
+                "score": round(score, 4)
+            })
+
+        ranked.sort(
+            key=lambda x: x["score"],
+            reverse=True
+        )
+
+        # return only the keywords in ranked order
+        return [r["keyword"] for r in ranked]
+
+    def get_top(self, words: list[str], db_data, top_k: int = 5) -> list[str]:
+        """Return top_k keywords for the given prefixes.
+
+        Delegates to `rank` and slices the result.
+        """
+        return self.rank(words, db_data)[:top_k]
