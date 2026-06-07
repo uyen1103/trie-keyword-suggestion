@@ -24,7 +24,7 @@ class TrieNode:
 
 ## Module 2: `trie.py` — TV1
 
-**Mô tả:** Cấu trúc cây Trie, hỗ trợ tiếng Việt và tiếng Anh (Unicode NFC).
+
 
 ```python
 class Trie:
