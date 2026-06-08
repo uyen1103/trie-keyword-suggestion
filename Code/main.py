@@ -1,8 +1,8 @@
 # main.py
 # Application entry point for trie keyword suggestion
 
-from app_controller import AppController
-from gui import MainWindow
+from .app_controller import AppController
+from .gui import MainWindow
  
  
 def main():
