@@ -1,8 +1,8 @@
+from sys import prefix
+
 import customtkinter as ctk
 
-# =========================
 # Cấu hình giao diện
-# =========================
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
@@ -29,13 +29,13 @@ class MainWindow(ctk.CTk):
         self.geometry("800x550")
         self.resizable(False, False)
 
-        self._build_ui()
+        self._build_ui()  
+        self._update_status()
+
 
     def _build_ui(self):
 
-        # =========================
         # Frame chính
-        # =========================
         self.main_frame = ctk.CTkFrame(
             self,
             corner_radius=15
@@ -48,9 +48,7 @@ class MainWindow(ctk.CTk):
             expand=True
         )
 
-        # =========================
         # Tiêu đề
-        # =========================
         self.title_label = ctk.CTkLabel(
             self.main_frame,
             text="🔍 HỆ THỐNG GỢI Ý TỪ KHÓA",
@@ -71,9 +69,7 @@ class MainWindow(ctk.CTk):
             pady=(0, 20)
         )
 
-        # =========================
         # Thanh tìm kiếm
-        # =========================
         self.search_frame = ctk.CTkFrame(
             self.main_frame,
             fg_color="transparent"
@@ -101,21 +97,19 @@ class MainWindow(ctk.CTk):
             self._on_search
         )
 
-        self.search_button = ctk.CTkButton(
+        self.clear_button = ctk.CTkButton(
             self.search_frame,
-            text="Tìm kiếm",
-            width=120,
-            height=40,
-            state="disabled"
+            text="❌ Clear",
+            width=100,
+            command=self.clear_input
         )
 
-        self.search_button.pack(
-            side="left"
+        self.clear_button.pack(
+            side="left",
+            padx=5
         )
 
-        # =========================
         # Tiêu đề kết quả
-        # =========================
         self.result_label = ctk.CTkLabel(
             self.main_frame,
             text="Danh sách gợi ý",
@@ -126,9 +120,7 @@ class MainWindow(ctk.CTk):
             pady=(25, 10)
         )
 
-        # =========================
         # ScrollableFrame
-        # =========================
         self.suggestion_frame = ctk.CTkScrollableFrame(
             self.main_frame,
             width=600,
@@ -142,18 +134,12 @@ class MainWindow(ctk.CTk):
 
         # Hiển thị dữ liệu mẫu
         self.show_suggestions([
-            "apple",
-            "application",
-            "apply",
-            "appstore"
         ])
 
-        # =========================
         # Footer
-        # =========================
         self.footer = ctk.CTkLabel(
             self.main_frame,
-            text="Trie Keyword Suggestion System © 2025",
+            text="0 từ | Top-K: 5",
             font=("Arial", 12)
         )
 
@@ -162,30 +148,36 @@ class MainWindow(ctk.CTk):
             pady=15
         )
 
-    # =========================
     # Khi người dùng gõ
-    # =========================
     def _on_search(self, event):
 
-        prefix = self.search_entry.get()
+        prefix = self.search_entry.get().strip()
 
-        suggestions = self.search_callback(
-            prefix
-        )
+        if prefix == "":
+            self.show_suggestions([])
+            return
 
-        self.show_suggestions(
-            suggestions
-        )
+        suggestions = self.search_callback(prefix)
 
-    # =========================
+        self.show_suggestions(suggestions)
+
     # Hiển thị gợi ý
-    # =========================
     def show_suggestions(self, words):
 
         # Xóa các button cũ
         for widget in self.suggestion_frame.winfo_children():
             widget.destroy()
+        
+        if not words:
+            empty_label = ctk.CTkLabel(
+                self.suggestion_frame,
+                text="Không có gợi ý"
+            )
+            empty_label.pack(
+                pady=10
+            )
 
+            return
         # Tạo button mới
         for word in words:
 
@@ -195,7 +187,7 @@ class MainWindow(ctk.CTk):
                 height=35,
                 anchor="w",
                 command=lambda w=word:
-                    self.select_callback(w)
+                self._on_select(w)
             )
 
             btn.pack(
@@ -204,48 +196,37 @@ class MainWindow(ctk.CTk):
                 padx=5
             )
 
+  # Select Suggestion
+    def _on_select(self, word):
 
-# ====================================
-# Test Mock
-# ====================================
+        self.search_entry.delete(0, "end")
+        self.search_entry.insert(0, word)
 
-if __name__ == "__main__":
+        if self.select_callback:
+            self.select_callback(word)
+            
+        suggestions = self.search_callback(word)
+        self.show_suggestions(suggestions)
+    # Clear Input
+    def clear_input(self):
 
-    demo_words = [
-        "apple",
-        "application",
-        "apply",
-        "appstore",
-        "banana",
-        "bank",
-        "basket",
-        "code",
-        "coding",
-        "computer"
-    ]
-
-    def mock_search(prefix):
-
-        if prefix == "":
-            return demo_words
-
-        return [
-            word
-            for word in demo_words
-            if word.startswith(
-                prefix.lower()
-            )
-        ]
-
-    def mock_select(word):
-
-        print(
-            f"Đã chọn: {word}"
+        self.search_entry.delete(
+            0,
+            "end"
         )
 
-    app = MainWindow(
-        search_callback=mock_search,
-        select_callback=mock_select
-    )
+        self.show_suggestions([])
 
-    app.mainloop()
+    # Update Status
+    def _update_status(self):
+
+        if not self.stats_callback:
+            return
+
+        stats = self.stats_callback()
+        total_words = stats.get("total_words", 0)
+        top_k = stats.get("top_k", 0)
+
+        self.footer.configure(
+            text=f"{stats['total_words']} từ | Top-K: {stats['top_k']}"
+        )
