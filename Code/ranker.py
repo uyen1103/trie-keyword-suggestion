@@ -83,3 +83,28 @@ class SuggestionRanker:
 		Delegates to `rank` and slices the result.
 		"""
 		return self.rank(words, db_data)[:top_k]
+
+	def explain(self, word: str, db_data: list[dict]) -> str:
+		"""Compute score for a single keyword and return a formatted string.
+
+		Example: 'python: score=0.85 (freq=1.00, rec=0.50)'
+		"""
+		if not db_data:
+			return f"{word}: score=0.00 (freq=0.00, rec=0.00)"
+
+		# find the item matching the keyword
+		item = next((it for it in db_data if it.get("keyword") == word), None)
+		if item is None:
+			return f"{word}: score=0.00 (freq=0.00, rec=0.00)"
+
+		max_freq = max((it.get("frequency", 0) for it in db_data), default=0)
+		freq = item.get("frequency", 0)
+
+		days_old = (datetime.now() - item.get("last_searched", datetime.now())).days
+
+		frequency_score = (freq / max_freq) if max_freq > 0 else 0.0
+		recency_score = 1 / (1 + days_old)
+
+		score = self.FREQ_WEIGHT * frequency_score + self.RECENCY_WEIGHT * recency_score
+
+		return f"{word}: score={score:.2f} (freq={frequency_score:.2f}, rec={recency_score:.2f})"

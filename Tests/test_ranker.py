@@ -67,3 +67,17 @@ def test_get_top_returns_top_k():
     expected = ranker.rank(["t"], db)[:3]
     assert top3 == expected
     assert len(top3) == 3
+
+
+def test_explain_handles_empty_db_and_missing_word():
+    now = datetime.now()
+    ranker = SuggestionRanker()
+
+    # empty db_data shouldn't crash and should report zero scores
+    res_empty = ranker.explain("missing", [])
+    assert "score=0.00" in res_empty
+
+    # db_data present but word missing and max frequency 0 -> fallback to 0
+    db_zero = [{"keyword": "x", "frequency": 0, "last_searched": now - timedelta(days=1)}]
+    res_missing = ranker.explain("missing", db_zero)
+    assert "score=0.00" in res_missing
