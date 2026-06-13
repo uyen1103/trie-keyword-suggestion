@@ -1,7 +1,7 @@
 # trie.py
 # Trie data structure for keyword storage and prefix lookup
 
-from Code.trie_node import TrieNode
+from .trie_node import TrieNode
 
 
 class Trie:

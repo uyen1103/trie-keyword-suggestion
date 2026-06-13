@@ -3,9 +3,9 @@
 
 from pathlib import Path
 
-from trie import Trie
-from database import DatabaseManager
-from ranker import SuggestionRanker
+from .trie import Trie
+from .database import DatabaseManager
+from .ranker import SuggestionRanker
 
 DATA_PATH = Path("Data/keywords.txt")
 

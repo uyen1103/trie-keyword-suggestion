@@ -9,7 +9,6 @@ sys.path.append(
 
 from Code.ranker import SuggestionRanker
 from datetime import datetime, timedelta
-from code.ranker import SuggestionRanker
 
 # case1
 def test_rank_returns_list_of_str():
