@@ -15,6 +15,13 @@ def main():
         history_callback=controller.get_history
     )
  
+    # Đóng DB khi cửa sổ bị tắt
+    def on_close():
+        controller.close()
+        app.destroy()
+
+    app.protocol("WM_DELETE_WINDOW", on_close)
+    
     app.mainloop()
  
  

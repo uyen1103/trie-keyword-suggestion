@@ -1,6 +1,7 @@
 import sqlite3
+import csv
 from pathlib import Path
-
+from datetime import datetime
 
 class DatabaseManager:
 
@@ -90,7 +91,11 @@ class DatabaseManager:
                 keywords
             )
             return [
-                {"keyword": row[0], "frequency": row[1], "last_searched": row[2]}
+                {
+                    "keyword": row[0], 
+                    "frequency": row[1], 
+                    "last_searched": datetime.strptime(row[2], "%Y-%m-%d %H:%M:%S") if row[2] else datetime.now()
+                }
                 for row in self.cursor.fetchall()
             ]
         except sqlite3.Error as e:
@@ -126,3 +131,31 @@ class DatabaseManager:
         except sqlite3.Error as e:
             print(f"DB error in import_from_file: {e}")
         return count
+    
+    def export_history(self, filepath: str) -> None:
+        """Xuất lịch sử tìm kiếm ra file CSV."""
+        try:
+            rows = self.get_history(limit=10000)
+            with open(filepath, "w", newline="", encoding="utf-8") as f:
+                writer = csv.DictWriter(
+                    f, fieldnames=["keyword", "frequency", "last_searched"]
+                )
+                writer.writeheader()
+                writer.writerows(rows)
+        except Exception as e:
+            print(f"Error in export_history: {e}")
+ 
+    def reset(self) -> None:
+        """Xóa toàn bộ dữ liệu trong bảng search_history."""
+        try:
+            self.cursor.execute("DELETE FROM search_history")
+            self.connection.commit()
+        except sqlite3.Error as e:
+            print(f"DB error in reset: {e}")
+ 
+    def close(self) -> None:
+        """Đóng kết nối SQLite."""
+        try:
+            self.connection.close()
+        except Exception as e:
+            print(f"Error in close: {e}")

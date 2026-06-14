@@ -1,5 +1,3 @@
-from sys import prefix
-
 import customtkinter as ctk
 
 # Cấu hình giao diện

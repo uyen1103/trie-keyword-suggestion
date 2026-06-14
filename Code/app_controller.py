@@ -31,6 +31,8 @@ class AppController:
 
     def search(self, prefix: str) -> list[str]:
         # Tìm kiếm và xếp hạng kết quả
+        if not prefix or not prefix.strip():
+            return []
         candidates = self.trie.prefix_search(prefix, max_results=50)
         db_data = self.db.get_all_data(candidates)
         return self.ranker.get_top(candidates, db_data, top_k=self.top_k)
@@ -57,3 +59,6 @@ class AppController:
             "total_words": self.trie.size(),
             "top_k": self.top_k
         }
+    def close(self) -> None:
+        """Đóng kết nối DB khi tắt app."""
+        self.db.close()
