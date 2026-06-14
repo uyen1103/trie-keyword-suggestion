@@ -59,6 +59,7 @@ class AppController:
             "total_words": self.trie.size(),
             "top_k": self.top_k
         }
+    
     def close(self) -> None:
         """Đóng kết nối DB khi tắt app."""
         self.db.close()

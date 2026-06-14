@@ -73,5 +73,5 @@ cd trie-keyword-suggestion
 pip install -r requirements.txt
 
 # 3. Chạy ứng dụng
-python Code/main.py
+python -m Code.main
 ```
