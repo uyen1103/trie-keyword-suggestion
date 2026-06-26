@@ -10,7 +10,7 @@ class SuggestionRanker:
 		self.RECENCY_WEIGHT = w_rec
 
 	def _get_days_old(self, last_searched) -> int:
-		"""Tính số ngày kể từ lần tìm kiếm cuối cùng, nếu lỗi thì trả về 0."""
+		#Tính số ngày kể từ lần tìm kiếm cuối cùng, nếu lỗi thì trả về 0.
 		if not last_searched:
 			return 0
 	
