@@ -9,6 +9,25 @@ class SuggestionRanker:
 		self.FREQ_WEIGHT = w_freq
 		self.RECENCY_WEIGHT = w_rec
 
+	def _get_days_old(self, last_searched) -> int:
+		"""Tính số ngày kể từ lần tìm kiếm cuối cùng, nếu lỗi thì trả về 0."""
+		if not last_searched:
+			return 0
+	
+		try:
+			if isinstance(last_searched, str):
+				dt = datetime.fromisoformat(last_searched.replace("Z", "+00:00"))
+			else:
+				dt = last_searched
+	
+			if dt.tzinfo is not None:
+				dt = dt.astimezone().replace(tzinfo=None)
+	
+			return max(0, (datetime.now() - dt).days)
+	
+		except (ValueError, TypeError):
+			return 0
+
 	def rank(self, words: list[str], db_data):
 		"""
 		words: list of prefixes user typed (list[str])
@@ -45,9 +64,7 @@ class SuggestionRanker:
 		for item in filtered:
 			freq = item["frequency"]
 
-			days_old = (
-				datetime.now() - item["last_searched"]
-			).days
+			days_old = self._get_days_old(item.get("last_searched"))
 
 			frequency_score = (
 				freq / max_freq
@@ -100,7 +117,7 @@ class SuggestionRanker:
 		max_freq = max((it.get("frequency", 0) for it in db_data), default=0)
 		freq = item.get("frequency", 0)
 
-		days_old = (datetime.now() - item.get("last_searched", datetime.now())).days
+		days_old = self._get_days_old(item.get("last_searched", datetime.now()))
 
 		frequency_score = (freq / max_freq) if max_freq > 0 else 0.0
 		recency_score = 1 / (1 + days_old)
