@@ -12,7 +12,8 @@ class MainWindow(ctk.CTk):
         search_callback,
         select_callback,
         stats_callback=None,
-        history_callback=None
+        history_callback=None,
+        lcp_callback=None
     ):
         super().__init__()
 
@@ -21,6 +22,7 @@ class MainWindow(ctk.CTk):
         self.select_callback = select_callback
         self.stats_callback = stats_callback
         self.history_callback = history_callback
+        self.lcp_callback = lcp_callback
 
         # Cửa sổ chính
         self.title("Keyword Suggestion System")
@@ -106,6 +108,13 @@ class MainWindow(ctk.CTk):
             side="left",
             padx=5
         )
+        self.lcp_label = ctk.CTkLabel(
+            self.main_frame,
+            text="",
+            font=("Arial", 13, "italic"),
+            text_color="#90CAF9"
+)
+        self.lcp_label.pack(pady=(4, 0))
 
         # Tiêu đề kết quả
         self.result_label = ctk.CTkLabel(
@@ -153,12 +162,19 @@ class MainWindow(ctk.CTk):
 
         if prefix == "":
             self.show_suggestions([])
+            self.lcp_label.configure(text="")
             return
 
         suggestions = self.search_callback(prefix)
 
         self.show_suggestions(suggestions)
 
+        if self.lcp_callback:
+            lcp = self.lcp_callback(prefix)
+            self.lcp_label.configure(
+                text=f'LCP: "{lcp}"' if lcp else ""
+            )
+            
     # Hiển thị gợi ý
     def show_suggestions(self, words):
 

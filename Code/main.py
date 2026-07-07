@@ -12,7 +12,8 @@ def main():
         search_callback=controller.search,
         select_callback=controller.on_select,
         stats_callback=controller.stats,
-        history_callback=controller.get_history
+        history_callback=controller.get_history,
+        lcp_callback=controller.get_lcp
     )
  
     # Đóng DB khi cửa sổ bị tắt
